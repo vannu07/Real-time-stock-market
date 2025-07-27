@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug API Test</title>
+</head>
+<body>
+    <h1>API Debug Test</h1>
+    <button onclick="testAPI()">Test AAPL API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Loading...';
+            
+            try {
+                console.log('Making API call to /api/stock/AAPL');
+                const response = await fetch('/api/stock/AAPL');
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                resultDiv.innerHTML = `
+                    <h3>API Response:</h3>
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>Success:</strong> ${data.success}</p>
+                    <p><strong>Symbol:</strong> ${data.symbol}</p>
+                    <p><strong>Current Price:</strong> $${data.stock_data?.current_price}</p>
+                    <p><strong>Sentiment:</strong> ${data.sentiment?.label}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                if (data.success) {
+                    console.log('✅ API call successful');
+                } else {
+                    console.log('❌ API call failed:', data.error);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error making API call:', error);
+                resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
