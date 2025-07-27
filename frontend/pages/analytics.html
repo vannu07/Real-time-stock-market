@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Analytics - Advanced Market Intelligence</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0a0e1a;
+            --secondary-bg: #1a1f2e;
+            --card-bg: #252d3d;
+            --accent-blue: #00d4ff;
+            --accent-green: #00ff88;
+            --accent-red: #ff4757;
+            --accent-purple: #a855f7;
+            --accent-orange: #ffa726;
+            --text-primary: #ffffff;
+            --text-secondary: #b8c5d1;
+            --text-muted: #6b7280;
+            --border-color: #374151;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            --gradient-purple: linear-gradient(135deg, #a855f7 0%, #e879f9 100%);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--accent-blue);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Header Section */
+        .analytics-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .ai-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 2rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .status-pulse {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        /* Analytics Grid */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .analytics-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .analytics-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .analytics-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .large-chart {
+            height: 400px;
+        }
+
+        /* AI Insights */
+        .ai-insights {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .insights-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .insights-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .insights-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .insight-item {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .insight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .insight-type {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .confidence-score {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .confidence-high {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+        }
+
+        .confidence-medium {
+            background: rgba(255, 167, 38, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .insight-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        /* Market Overview */
+        .market-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .market-stat {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .market-stat:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+        }
+
+        .positive {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+        }
+
+        .negative {
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--accent-red);
+        }
+
+        /* Prediction Models */
+        .prediction-models {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .models-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .models-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .model-accuracy {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 2rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .model-card {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .model-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .model-metrics {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .model-status {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+        }
+
+        .status-training {
+            background: rgba(255, 167, 38, 0.2);
+            color: var(--accent-orange);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .header-title {
+                font-size: 2rem;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .market-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .models-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>AI Analytics</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="/pages/dashboard.html" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="/pages/analytics.html" class="nav-link active">
+                    <i class="fas fa-brain"></i>
+                    AI Analytics
+                </a>
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header Section -->
+        <section class="analytics-header fade-in">
+            <h1 class="header-title">AI Market Intelligence</h1>
+            <p class="header-subtitle">
+                Advanced machine learning models analyzing market patterns, sentiment, and predictions in real-time
+            </p>
+            <div class="ai-status">
+                <div class="status-pulse"></div>
+                <span>15 AI Models Active • 94.7% Accuracy</span>
+            </div>
+        </section>
+
+        <!-- Market Overview -->
+        <section class="market-overview fade-in">
+            <div class="market-stat slide-up">
+                <div class="stat-value positive">+2.4%</div>
+                <div class="stat-label">Market Sentiment</div>
+                <div class="stat-change positive">Bullish</div>
+            </div>
+            <div class="market-stat slide-up" style="animation-delay: 0.1s;">
+                <div class="stat-value">847</div>
+                <div class="stat-label">Signals Generated</div>
+                <div class="stat-change positive">+12% Today</div>
+            </div>
+            <div class="market-stat slide-up" style="animation-delay: 0.2s;">
+                <div class="stat-value">$2.4M</div>
+                <div class="stat-label">Assets Analyzed</div>
+                <div class="stat-change positive">+5.2%</div>
+            </div>
+            <div class="market-stat slide-up" style="animation-delay: 0.3s;">
+                <div class="stat-value">99.2%</div>
+                <div class="stat-label">System Uptime</div>
+                <div class="stat-change positive">Excellent</div>
+            </div>
+        </section>
+
+        <!-- Analytics Grid -->
+        <section class="analytics-grid fade-in">
+            <!-- Market Sentiment Analysis -->
+            <div class="analytics-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon" style="background: var(--gradient-success);">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        Market Sentiment
+                    </div>
+                    <div class="confidence-score confidence-high">95% Confidence</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="sentimentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Prediction -->
+            <div class="analytics-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon" style="background: var(--gradient-primary);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        Price Predictions
+                    </div>
+                    <div class="confidence-score confidence-high">92% Accuracy</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Volume Analysis -->
+            <div class="analytics-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon" style="background: var(--gradient-danger);">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        Volume Analysis
+                    </div>
+                    <div class="confidence-score confidence-medium">87% Confidence</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="volumeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Assessment -->
+            <div class="analytics-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon" style="background: var(--gradient-purple);">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        Risk Assessment
+                    </div>
+                    <div class="confidence-score confidence-high">91% Confidence</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="riskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Insights -->
+        <section class="ai-insights fade-in">
+            <div class="insights-header">
+                <div class="insights-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div>
+                    <h2 class="insights-title">AI-Generated Insights</h2>
+                    <p style="color: var(--text-secondary);">Real-time market intelligence powered by advanced machine learning</p>
+                </div>
+            </div>
+            
+            <div class="insights-grid">
+                <div class="insight-item slide-up">
+                    <div class="insight-header">
+                        <div class="insight-type">Market Trend</div>
+                        <div class="confidence-score confidence-high">High Confidence</div>
+                    </div>
+                    <div class="insight-content">
+                        Strong bullish momentum detected across tech sector. AI models predict continued upward trend with 94% confidence based on sentiment analysis and technical indicators.
+                    </div>
+                </div>
+                
+                <div class="insight-item slide-up" style="animation-delay: 0.1s;">
+                    <div class="insight-header">
+                        <div class="insight-type">Risk Alert</div>
+                        <div class="confidence-score confidence-medium">Medium Risk</div>
+                    </div>
+                    <div class="insight-content">
+                        Increased volatility expected in energy sector due to geopolitical tensions. Recommend defensive positioning and stop-loss strategies for energy holdings.
+                    </div>
+                </div>
+                
+                <div class="insight-item slide-up" style="animation-delay: 0.2s;">
+                    <div class="insight-header">
+                        <div class="insight-type">Opportunity</div>
+                        <div class="confidence-score confidence-high">High Potential</div>
+                    </div>
+                    <div class="insight-content">
+                        AI identifies undervalued opportunities in healthcare sector. Strong fundamentals combined with positive sentiment suggest potential 15-20% upside.
+                    </div>
+                </div>
+                
+                <div class="insight-item slide-up" style="animation-delay: 0.3s;">
+                    <div class="insight-header">
+                        <div class="insight-type">News Impact</div>
+                        <div class="confidence-score confidence-high">High Impact</div>
+                    </div>
+                    <div class="insight-content">
+                        Federal Reserve policy announcement expected to drive market volatility. AI models suggest defensive positioning ahead of announcement.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prediction Models -->
+        <section class="prediction-models fade-in">
+            <div class="models-header">
+                <h2 class="models-title">AI Prediction Models</h2>
+                <div class="model-accuracy">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Overall Accuracy: 94.7%</span>
+                </div>
+            </div>
+            
+            <div class="models-grid">
+                <div class="model-card slide-up">
+                    <h3 class="model-name">LSTM Neural Network</h3>
+                    <div class="model-metrics">
+                        <div class="metric">
+                            <div class="metric-value">96.2%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0.85</div>
+                            <div class="metric-label">R² Score</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">2.3%</div>
+                            <div class="metric-label">MAPE</div>
+                        </div>
+                    </div>
+                    <div class="model-status status-active">Active</div>
+                </div>
+                
+                <div class="model-card slide-up" style="animation-delay: 0.1s;">
+                    <h3 class="model-name">Random Forest</h3>
+                    <div class="model-metrics">
+                        <div class="metric">
+                            <div class="metric-value">93.8%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0.82</div>
+                            <div class="metric-label">R² Score</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">3.1%</div>
+                            <div class="metric-label">MAPE</div>
+                        </div>
+                    </div>
+                    <div class="model-status status-active">Active</div>
+                </div>
+                
+                <div class="model-card slide-up" style="animation-delay: 0.2s;">
+                    <h3 class="model-name">XGBoost Ensemble</h3>
+                    <div class="model-metrics">
+                        <div class="metric">
+                            <div class="metric-value">94.5%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0.83</div>
+                            <div class="metric-label">R² Score</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">2.8%</div>
+                            <div class="metric-label">MAPE</div>
+                        </div>
+                    </div>
+                    <div class="model-status status-active">Active</div>
+                </div>
+                
+                <div class="model-card slide-up" style="animation-delay: 0.3s;">
+                    <h3 class="model-name">Transformer Model</h3>
+                    <div class="model-metrics">
+                        <div class="metric">
+                            <div class="metric-value">91.2%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0.79</div>
+                            <div class="metric-label">R² Score</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">4.2%</div>
+                            <div class="metric-label">MAPE</div>
+                        </div>
+                    </div>
+                    <div class="model-status status-training">Training</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Initialize analytics dashboard
+        class AnalyticsDashboard {
+            constructor() {
+                this.charts = {};
+                this.init();
+            }
+
+            init() {
+                this.initializeCharts();
+                this.startRealTimeUpdates();
+            }
+
+            initializeCharts() {
+                this.createSentimentChart();
+                this.createPredictionChart();
+                this.createVolumeChart();
+                this.createRiskChart();
+            }
+
+            createSentimentChart() {
+                const ctx = document.getElementById('sentimentChart').getContext('2d');
+                
+                this.charts.sentiment = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Bullish', 'Bearish', 'Neutral'],
+                        datasets: [{
+                            data: [65, 20, 15],
+                            backgroundColor: [
+                                '#00ff88',
+                                '#ff4757',
+                                '#ffa726'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#b8c5d1',
+                                    padding: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            createPredictionChart() {
+                const ctx = document.getElementById('predictionChart').getContext('2d');
+                
+                const data = this.generatePredictionData();
+                
+                this.charts.prediction = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Actual',
+                            data: data.actual,
+                            borderColor: '#00d4ff',
+                            backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                            borderWidth: 2,
+                            fill: false
+                        }, {
+                            label: 'Predicted',
+                            data: data.predicted,
+                            borderColor: '#00ff88',
+                            backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#b8c5d1'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: '#374151'
+                                },
+                                ticks: {
+                                    color: '#9ca3af'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: '#374151'
+                                },
+                                ticks: {
+                                    color: '#9ca3af'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            createVolumeChart() {
+                const ctx = document.getElementById('volumeChart').getContext('2d');
+                
+                const data = this.generateVolumeData();
+                
+                this.charts.volume = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Volume',
+                            data: data.values,
+                            backgroundColor: data.values.map(v => v > 50 ? '#00ff88' : '#ff4757'),
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: '#374151'
+                                },
+                                ticks: {
+                                    color: '#9ca3af'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: '#374151'
+                                },
+                                ticks: {
+                                    color: '#9ca3af'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            createRiskChart() {
+                const ctx = document.getElementById('riskChart').getContext('2d');
+                
+                this.charts.risk = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Market Risk', 'Credit Risk', 'Liquidity Risk', 'Operational Risk', 'Volatility Risk'],
+                        datasets: [{
+                            label: 'Current Risk Level',
+                            data: [65, 45, 30, 25, 70],
+                            borderColor: '#a855f7',
+                            backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#b8c5d1'
+                                }
+                            }
+                        },
+                        scales: {
+                            r: {
+                                grid: {
+                                    color: '#374151'
+                                },
+                                pointLabels: {
+                                    color: '#9ca3af'
+                                },
+                                ticks: {
+                                    color: '#9ca3af',
+                                    backdropColor: 'transparent'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            generatePredictionData() {
+                const labels = [];
+                const actual = [];
+                const predicted = [];
+                
+                for (let i = 0; i < 30; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - (29 - i));
+                    labels.push(date.toLocaleDateString());
+                    
+                    const baseValue = 100 + Math.sin(i * 0.2) * 20;
+                    actual.push(baseValue + (Math.random() - 0.5) * 10);
+                    predicted.push(baseValue + (Math.random() - 0.5) * 5);
+                }
+                
+                return { labels, actual, predicted };
+            }
+
+            generateVolumeData() {
+                const labels = [];
+                const values = [];
+                
+                for (let i = 0; i < 20; i++) {
+                    labels.push(`Day ${i + 1}`);
+                    values.push(Math.random() * 100);
+                }
+                
+                return { labels, values };
+            }
+
+            startRealTimeUpdates() {
+                // Simulate real-time updates
+                setInterval(() => {
+                    this.updateCharts();
+                }, 5000);
+            }
+
+            updateCharts() {
+                // Update sentiment chart
+                if (this.charts.sentiment) {
+                    const newData = [
+                        60 + Math.random() * 10,
+                        15 + Math.random() * 10,
+                        15 + Math.random() * 10
+                    ];
+                    this.charts.sentiment.data.datasets[0].data = newData;
+                    this.charts.sentiment.update('none');
+                }
+
+                // Update other charts similarly
+                this.animateStats();
+            }
+
+            animateStats() {
+                // Animate market overview stats
+                const stats = document.querySelectorAll('.stat-value');
+                stats.forEach((stat, index) => {
+                    const currentValue = parseFloat(stat.textContent.replace(/[^0-9.-]/g, ''));
+                    const newValue = currentValue + (Math.random() - 0.5) * 2;
+                    
+                    this.animateValue(stat, currentValue, newValue, stat.textContent.includes('$') ? '$' : '', 
+                                    stat.textContent.includes('%') ? '%' : '');
+                });
+            }
+
+            animateValue(element, start, end, prefix = '', suffix = '') {
+                const duration = 1000;
+                const startTime = performance.now();
+
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const current = start + (end - start) * progress;
+                    const formatted = prefix + (current % 1 === 0 ? current.toFixed(0) : current.toFixed(1)) + suffix;
+                    
+                    element.textContent = formatted;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+
+                requestAnimationFrame(animate);
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new AnalyticsDashboard();
+        });
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.slide-up, .insight-item, .model-card').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Stock Dashboard - Debug Version</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stock-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .stock-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .stock-card.selected {
+            border-color: #fbbf24;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .stock-symbol {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stock-price {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stock-change {
+            font-size: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+        }
+        
+        .positive { background: rgba(16, 185, 129, 0.3); }
+        .negative { background: rgba(239, 68, 68, 0.3); }
+        
+        .analysis-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        .analysis-section.active {
+            display: block;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .data-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .success-message {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Simple Stock Dashboard - Debug Version</h1>
+            <p>Click on any stock to test the API</p>
+        </div>
+        
+        <div id="messages"></div>
+        
+        <div class="stock-grid" id="stockGrid">
+            <!-- Stock cards will be loaded here -->
+        </div>
+        
+        <div class="analysis-section" id="analysisSection">
+            <h2 id="currentStock">📊 Stock Analysis</h2>
+            <div id="analysisContent">
+                <!-- Analysis content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SimpleStockDashboard {
+            constructor() {
+                this.currentStock = null;
+                this.init();
+            }
+
+            async init() {
+                console.log('🚀 Initializing Simple Dashboard...');
+                await this.loadStocks();
+            }
+
+            showMessage(message, type = 'info') {
+                const messagesDiv = document.getElementById('messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+                messageDiv.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i> ${message}`;
+                messagesDiv.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 5000);
+            }
+
+            async loadStocks() {
+                try {
+                    console.log('📊 Loading stocks...');
+                    const response = await fetch('/api/stocks');
+                    const data = await response.json();
+                    
+                    console.log('📊 Stocks response:', data);
+                    
+                    if (data.success) {
+                        this.renderStockCards(data.stocks);
+                        this.showMessage(`✅ Loaded ${data.count} stocks successfully!`);
+                    } else {
+                        throw new Error(data.error || 'Failed to load stocks');
+                    }
+                } catch (error) {
+                    console.error('❌ Error loading stocks:', error);
+                    this.showMessage(`❌ Failed to load stocks: ${error.message}`, 'error');
+                }
+            }
+
+            renderStockCards(stocks) {
+                const stockGrid = document.getElementById('stockGrid');
+                stockGrid.innerHTML = '';
+
+                stocks.forEach(stock => {
+                    const card = document.createElement('div');
+                    card.className = 'stock-card';
+                    card.dataset.symbol = stock.symbol;
+                    
+                    const changeClass = stock.change_percent >= 0 ? 'positive' : 'negative';
+                    const changeIcon = stock.change_percent >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                    
+                    card.innerHTML = `
+                        <div class="stock-symbol">${stock.symbol}</div>
+                        <div class="stock-price">$${stock.current_price}</div>
+                        <div class="stock-change ${changeClass}">
+                            <i class="fas ${changeIcon}"></i>
+                            ${stock.change_percent > 0 ? '+' : ''}${stock.change_percent}%
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', () => {
+                        this.selectStock(stock.symbol);
+                    });
+                    
+                    stockGrid.appendChild(card);
+                });
+            }
+
+            async selectStock(symbol) {
+                console.log(`🎯 Selected stock: ${symbol}`);
+                
+                // Update UI
+                document.querySelectorAll('.stock-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                const selectedCard = document.querySelector(`[data-symbol="${symbol}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add('selected');
+                }
+
+                // Show analysis section
+                const analysisSection = document.getElementById('analysisSection');
+                analysisSection.classList.add('active');
+                
+                // Update current stock
+                this.currentStock = symbol;
+                document.getElementById('currentStock').textContent = `📊 ${symbol} Analysis`;
+
+                // Load stock data
+                await this.loadStockData(symbol);
+            }
+
+            async loadStockData(symbol) {
+                const analysisContent = document.getElementById('analysisContent');
+                
+                try {
+                    console.log(`🔄 Loading data for ${symbol}...`);
+                    
+                    // Show loading
+                    analysisContent.innerHTML = `
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Loading ${symbol} data...</p>
+                        </div>
+                    `;
+
+                    const response = await fetch(`/api/stock/${symbol}`);
+                    console.log(`📡 API Response status: ${response.status}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log(`📊 API Response data for ${symbol}:`, data);
+
+                    if (data.success) {
+                        console.log(`✅ Data loaded successfully for ${symbol}`);
+                        this.displayStockData(data);
+                        this.showMessage(`✅ ${symbol} data loaded successfully!`);
+                    } else {
+                        throw new Error(data.error || 'API returned success: false');
+                    }
+
+                } catch (error) {
+                    console.error(`❌ Error loading stock data for ${symbol}:`, error);
+                    this.showMessage(`❌ Failed to load ${symbol} data: ${error.message}`, 'error');
+                    
+                    analysisContent.innerHTML = `
+                        <div class="error-message">
+                            <h3>❌ Unable to load ${symbol} data</h3>
+                            <p>Error: ${error.message}</p>
+                            <button onclick="dashboard.loadStockData('${symbol}')">
+                                🔄 Try Again
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            displayStockData(data) {
+                const analysisContent = document.getElementById('analysisContent');
+                
+                analysisContent.innerHTML = `
+                    <div class="data-grid">
+                        <div class="data-card">
+                            <h3>💰 Stock Data</h3>
+                            <p><strong>Current Price:</strong> $${data.stock_data.current_price}</p>
+                            <p><strong>Change:</strong> ${data.stock_data.change_percent}%</p>
+                            <p><strong>Volume:</strong> ${data.stock_data.volume.toLocaleString()}</p>
+                            <p><strong>Market Cap:</strong> ${data.stock_data.market_cap}</p>
+                            <p><strong>P/E Ratio:</strong> ${data.stock_data.pe_ratio}</p>
+                        </div>
+                        
+                        <div class="data-card">
+                            <h3>🧠 AI Sentiment</h3>
+                            <p><strong>Overall:</strong> ${data.sentiment.label}</p>
+                            <p><strong>Score:</strong> ${data.sentiment.compound.toFixed(3)}</p>
+                            <p><strong>Confidence:</strong> ${(data.sentiment.confidence * 100).toFixed(1)}%</p>
+                            <p><strong>News:</strong> ${(data.sentiment.sources.news * 100).toFixed(0)}%</p>
+                            <p><strong>Social:</strong> ${(data.sentiment.sources.social * 100).toFixed(0)}%</p>
+                        </div>
+                        
+                        <div class="data-card">
+                            <h3>🔮 AI Predictions</h3>
+                            <p><strong>Next Day:</strong> $${data.predictions.next_day.price}</p>
+                            <p><strong>Direction:</strong> ${data.predictions.next_day.direction.toUpperCase()}</p>
+                            <p><strong>Confidence:</strong> ${(data.predictions.next_day.confidence * 100).toFixed(1)}%</p>
+                            <p><strong>Next Week:</strong> $${data.predictions.next_week.price}</p>
+                            <p><strong>Next Month:</strong> $${data.predictions.next_month.price}</p>
+                        </div>
+                        
+                        <div class="data-card">
+                            <h3>📈 Historical Data</h3>
+                            <p><strong>Data Points:</strong> ${data.historical.length}</p>
+                            <p><strong>Date Range:</strong> ${data.historical[0]?.date} to ${data.historical[data.historical.length-1]?.date}</p>
+                            <p><strong>Price Range:</strong> $${Math.min(...data.historical.map(d => d.price)).toFixed(2)} - $${Math.max(...data.historical.map(d => d.price)).toFixed(2)}</p>
+                            <button onclick="dashboard.showHistoricalChart('${data.symbol}')">📊 Show Chart</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <button onclick="dashboard.exportData()">📁 Export Data</button>
+                        <button onclick="dashboard.loadStockData('${data.symbol}')">🔄 Refresh</button>
+                    </div>
+                `;
+            }
+
+            showHistoricalChart(symbol) {
+                this.showMessage(`📊 Chart feature coming soon for ${symbol}!`);
+            }
+
+            exportData() {
+                if (!this.currentStock) {
+                    this.showMessage('❌ Please select a stock first', 'error');
+                    return;
+                }
+
+                const data = {
+                    symbol: this.currentStock,
+                    timestamp: new Date().toISOString(),
+                    exported_by: 'Simple Stock Dashboard'
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${this.currentStock}_analysis.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                this.showMessage(`📁 ${this.currentStock} data exported successfully!`);
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.dashboard = new SimpleStockDashboard();
+            console.log('🚀 Simple Dashboard initialized successfully');
+        });
+    </script>
+</body>
+</html>

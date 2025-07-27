@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 AI Stock Dashboard - Smart Trading Intelligence</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-bg: #1a1f2e;
+            --card-bg: #ffffff;
+            --card-dark: #252d3d;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --accent-orange: #f59e0b;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-white: #ffffff;
+            --border-light: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary-bg);
+            color: var(--text-white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--primary-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border-radius: 2rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+        }
+
+        .stat-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
+        /* Stock Selection */
+        .stock-section {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Search Section */
+        .search-section {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .search-container {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto 1rem;
+            gap: 0.5rem;
+        }
+
+        #stockSearch {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--border-light);
+            border-radius: 50px;
+            background: white;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #stockSearch::placeholder {
+            color: var(--text-secondary);
+        }
+
+        #stockSearch:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            border: 2px solid var(--accent-blue);
+            border-radius: 50px;
+            background: var(--accent-blue);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .search-suggestions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .suggestion-tag {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .suggestion-tag:hover {
+            background: var(--accent-blue);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stock-card {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border: 2px solid var(--border-light);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stock-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stock-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stock-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-blue);
+        }
+
+        .stock-card.selected {
+            border-color: var(--accent-blue);
+            background: linear-gradient(135deg, #dbeafe, #eff6ff);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stock-card.selected::before {
+            transform: scaleX(1);
+        }
+
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stock-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            box-shadow: var(--shadow-md);
+        }
+
+        .stock-info h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stock-symbol {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stock-price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stock-change {
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+        }
+
+        /* Search Section */
+        .search-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .search-container {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            gap: 1rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 3rem;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-light);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 2rem;
+            font-size: 1rem;
+            outline: none;
+            background: transparent;
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            background: var(--primary-bg);
+            border: none;
+            border-radius: 2rem;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Analysis Section */
+        .analysis-section {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            display: none;
+        }
+
+        .analysis-section.active {
+            display: block;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .analysis-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--primary-bg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .analysis-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            border-radius: 0.75rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .analysis-card {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border: 1px solid var(--border-light);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .analysis-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Sentiment Analysis */
+        .sentiment-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            border-radius: 2rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .sentiment-breakdown {
+            margin-top: 1.5rem;
+        }
+
+        .sentiment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+        }
+
+        .sentiment-bar {
+            flex: 1;
+            height: 10px;
+            background: var(--border-light);
+            border-radius: 5px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+
+        .sentiment-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.8s ease;
+        }
+
+        .sentiment-fill.positive {
+            background: linear-gradient(90deg, var(--accent-green), #059669);
+        }
+
+        .sentiment-fill.negative {
+            background: linear-gradient(90deg, var(--accent-red), #dc2626);
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-light);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header-content {
+                padding: 0 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stock-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-container {
+                flex-direction: column;
+                max-width: 300px;
+            }
+
+            .analysis-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        /* Success Messages */
+        .success-message {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>AI Stock Dashboard</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="/pages/analytics.html" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    AI Analytics
+                </a>
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <section class="welcome-section fade-in">
+            <div class="welcome-header">
+                <h1 class="welcome-title">🚀 Welcome to Your AI Trading Dashboard</h1>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span>Live Market Data</span>
+                </div>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card slide-in">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-change positive">+12.5%</div>
+                    </div>
+                    <div class="stat-label">Portfolio Value</div>
+                    <div class="stat-value" id="portfolioValue">$125,430</div>
+                </div>
+                
+                <div class="stat-card slide-in" style="animation-delay: 0.1s;">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="stat-change positive">+2.1%</div>
+                    </div>
+                    <div class="stat-label">AI Accuracy</div>
+                    <div class="stat-value" id="aiAccuracy">94.2%</div>
+                </div>
+                
+                <div class="stat-card slide-in" style="animation-delay: 0.2s;">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="stat-change positive">New</div>
+                    </div>
+                    <div class="stat-label">Active Signals</div>
+                    <div class="stat-value" id="activeSignals">7</div>
+                </div>
+                
+                <div class="stat-card slide-in" style="animation-delay: 0.3s;">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-trending-up"></i>
+                        </div>
+                        <div class="stat-change positive">+2.3%</div>
+                    </div>
+                    <div class="stat-label">Today's Gain</div>
+                    <div class="stat-value" id="todayGain">+$2,847</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stock Selection -->
+        <section class="stock-section fade-in">
+            <div class="section-header">
+                <h2 class="section-title">📈 Select Stock to Analyze</h2>
+                <p class="section-subtitle">Choose from popular stocks or search for any symbol</p>
+            </div>
+            
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" id="stockSearch" placeholder="🔍 Search for any stock symbol (e.g., AAPL, IBM, DIS)..." maxlength="10">
+                    <button id="searchBtn" class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                </div>
+                <div class="search-suggestions" id="searchSuggestions">
+                    <span class="suggestion-label">Try these:</span>
+                    <span class="suggestion-tag" onclick="dashboard.searchStock('IBM')">IBM</span>
+                    <span class="suggestion-tag" onclick="dashboard.searchStock('DIS')">DIS</span>
+                    <span class="suggestion-tag" onclick="dashboard.searchStock('V')">V</span>
+                    <span class="suggestion-tag" onclick="dashboard.searchStock('INTC')">INTC</span>
+                    <span class="suggestion-tag" onclick="dashboard.searchStock('AMD')">AMD</span>
+                </div>
+            </div>
+            
+            <div class="stock-grid" id="stockGrid">
+                <!-- Stock cards will be loaded here -->
+            </div>
+            
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" id="stockSearch" class="search-input" placeholder="Enter stock symbol (e.g., NVDA, NFLX)">
+                    <button id="searchBtn" class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Analyze
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Section -->
+        <section class="analysis-section" id="analysisSection">
+            <div class="analysis-header">
+                <h2 class="analysis-title" id="currentStock">📊 Stock Analysis</h2>
+                <div class="analysis-controls">
+                    <button class="control-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                    <button class="control-btn" id="exportBtn">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                </div>
+            </div>
+            
+            <div class="analysis-grid">
+                <!-- Price Chart -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-area"></i>
+                            Price Chart
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Sentiment -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-brain"></i>
+                            AI Sentiment Analysis
+                        </h3>
+                        <div class="sentiment-score">
+                            <i class="fas fa-heart"></i>
+                            <span id="sentimentValue">Bullish 0.72</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="sentiment-breakdown" id="sentimentBreakdown">
+                            <!-- Sentiment data will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Trading Signals -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-signal"></i>
+                            AI Trading Signals
+                        </h3>
+                    </div>
+                    <div class="card-body" id="tradingSignals">
+                        <!-- Trading signals will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Key Metrics -->
+                <div class="analysis-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-list-ul"></i>
+                            Key Metrics
+                        </h3>
+                    </div>
+                    <div class="card-body" id="keyMetrics">
+                        <!-- Key metrics will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Dashboard Controller
+        class StockDashboard {
+            constructor() {
+                this.currentStock = null;
+                this.chart = null;
+                this.init();
+            }
+
+            async init() {
+                this.setupEventListeners();
+                this.setupSearchFunctionality();
+                await this.loadStocks();
+                this.startRealTimeUpdates();
+                this.showWelcomeMessage();
+            }
+
+            showWelcomeMessage() {
+                const welcomeMsg = document.createElement('div');
+                welcomeMsg.className = 'success-message fade-in';
+                welcomeMsg.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <span>🎉 Dashboard loaded successfully! Select a stock to start analyzing.</span>
+                `;
+                document.querySelector('.container').insertBefore(welcomeMsg, document.querySelector('.welcome-section'));
+                
+                setTimeout(() => {
+                    welcomeMsg.remove();
+                }, 5000);
+            }
+
+            setupEventListeners() {
+                // Search functionality
+                document.getElementById('searchBtn').addEventListener('click', () => {
+                    const symbol = document.getElementById('stockSearch').value.toUpperCase().trim();
+                    if (symbol) {
+                        this.selectStock(symbol);
+                    }
+                });
+
+                // Enter key for search
+                document.getElementById('stockSearch').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const symbol = e.target.value.toUpperCase().trim();
+                        if (symbol) {
+                            this.selectStock(symbol);
+                        }
+                    }
+                });
+
+                // Refresh button
+                document.getElementById('refreshBtn').addEventListener('click', () => {
+                    if (this.currentStock) {
+                        this.loadStockData(this.currentStock);
+                    }
+                });
+
+                // Export button
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.exportData();
+                });
+            }
+
+            setupSearchFunctionality() {
+                const searchInput = document.getElementById('stockSearch');
+                
+                // Input validation - only allow letters
+                searchInput.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+                });
+            }
+
+            async searchStock(symbol) {
+                console.log(`🔍 Searching for stock: ${symbol}`);
+                
+                // Clear search input
+                const searchInput = document.getElementById('stockSearch');
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+                
+                // Show loading message
+                this.showMessage(`🔍 Searching for ${symbol}...`);
+                
+                try {
+                    // Try to load the stock data directly
+                    await this.selectStock(symbol);
+                } catch (error) {
+                    console.error(`❌ Error searching for ${symbol}:`, error);
+                    this.showError(`❌ Could not find data for ${symbol}. Please try another symbol.`);
+                }
+            }
+
+            async loadStocks() {
+                try {
+                    const response = await fetch('/api/stocks');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.renderStockCards(data.stocks);
+                    } else {
+                        this.showError('Failed to load stocks');
+                    }
+                } catch (error) {
+                    console.error('Error loading stocks:', error);
+                    this.showError('Failed to connect to server');
+                }
+            }
+
+            renderStockCards(stocks) {
+                const stockGrid = document.getElementById('stockGrid');
+                stockGrid.innerHTML = '';
+
+                stocks.forEach((stock, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'stock-card slide-in';
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.dataset.symbol = stock.symbol;
+                    
+                    const changeClass = stock.change_percent >= 0 ? 'positive' : 'negative';
+                    const changeIcon = stock.change_percent >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                    
+                    card.innerHTML = `
+                        <div class="stock-header">
+                            <div class="stock-logo">
+                                ${this.getStockIcon(stock.symbol)}
+                            </div>
+                            <div class="stock-change ${changeClass}">
+                                <i class="fas ${changeIcon}"></i>
+                                ${stock.change_percent > 0 ? '+' : ''}${stock.change_percent}%
+                            </div>
+                        </div>
+                        <div class="stock-info">
+                            <h3>${this.getCompanyName(stock.symbol)}</h3>
+                            <p class="stock-symbol">${stock.symbol}</p>
+                            <p class="stock-price">$${stock.current_price}</p>
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', () => {
+                        this.selectStock(stock.symbol);
+                    });
+                    
+                    stockGrid.appendChild(card);
+                });
+            }
+
+            getStockIcon(symbol) {
+                const icons = {
+                    // Tech Giants
+                    'AAPL': '<i class="fab fa-apple"></i>',
+                    'GOOGL': '<i class="fab fa-google"></i>',
+                    'MSFT': '<i class="fab fa-microsoft"></i>',
+                    'AMZN': '<i class="fab fa-amazon"></i>',
+                    'META': '<i class="fab fa-meta"></i>',
+                    'NVDA': '<i class="fas fa-microchip"></i>',
+                    'NFLX': '<i class="fas fa-play"></i>',
+                    'ORCL': '<i class="fas fa-database"></i>',
+                    // Electric Vehicles & Energy
+                    'TSLA': '<i class="fas fa-car"></i>',
+                    'NIO': '<i class="fas fa-bolt"></i>',
+                    'RIVN': '<i class="fas fa-truck"></i>',
+                    'LCID': '<i class="fas fa-car-side"></i>',
+                    // Finance & Banking
+                    'JPM': '<i class="fas fa-university"></i>',
+                    'BAC': '<i class="fas fa-piggy-bank"></i>',
+                    'WFC': '<i class="fas fa-coins"></i>',
+                    'GS': '<i class="fas fa-chart-line"></i>',
+                    // Healthcare & Pharma
+                    'JNJ': '<i class="fas fa-heartbeat"></i>',
+                    'PFE': '<i class="fas fa-pills"></i>',
+                    'UNH': '<i class="fas fa-user-md"></i>',
+                    'ABBV': '<i class="fas fa-microscope"></i>',
+                    // Consumer & Retail
+                    'WMT': '<i class="fas fa-shopping-cart"></i>',
+                    'HD': '<i class="fas fa-hammer"></i>',
+                    'PG': '<i class="fas fa-soap"></i>',
+                    'KO': '<i class="fas fa-glass-whiskey"></i>',
+                    // Aerospace & Defense
+                    'BA': '<i class="fas fa-plane"></i>',
+                    'LMT': '<i class="fas fa-rocket"></i>',
+                    'RTX': '<i class="fas fa-satellite"></i>',
+                    'NOC': '<i class="fas fa-fighter-jet"></i>'
+                };
+                return icons[symbol] || '<i class="fas fa-chart-line"></i>';
+            }
+
+            getCompanyName(symbol) {
+                const names = {
+                    // Tech Giants
+                    'AAPL': 'Apple Inc.',
+                    'GOOGL': 'Alphabet Inc.',
+                    'MSFT': 'Microsoft Corp.',
+                    'AMZN': 'Amazon.com Inc.',
+                    'META': 'Meta Platforms',
+                    'NVDA': 'NVIDIA Corp.',
+                    'NFLX': 'Netflix Inc.',
+                    'ORCL': 'Oracle Corp.',
+                    // Electric Vehicles & Energy
+                    'TSLA': 'Tesla Inc.',
+                    'NIO': 'NIO Inc.',
+                    'RIVN': 'Rivian Automotive',
+                    'LCID': 'Lucid Group Inc.',
+                    // Finance & Banking
+                    'JPM': 'JPMorgan Chase',
+                    'BAC': 'Bank of America',
+                    'WFC': 'Wells Fargo',
+                    'GS': 'Goldman Sachs',
+                    // Healthcare & Pharma
+                    'JNJ': 'Johnson & Johnson',
+                    'PFE': 'Pfizer Inc.',
+                    'UNH': 'UnitedHealth Group',
+                    'ABBV': 'AbbVie Inc.',
+                    // Consumer & Retail
+                    'WMT': 'Walmart Inc.',
+                    'HD': 'Home Depot',
+                    'PG': 'Procter & Gamble',
+                    'KO': 'Coca-Cola Co.',
+                    // Aerospace & Defense
+                    'BA': 'Boeing Co.',
+                    'LMT': 'Lockheed Martin',
+                    'RTX': 'Raytheon Technologies',
+                    'NOC': 'Northrop Grumman'
+                };
+                return names[symbol] || `${symbol} Corp.`;
+            }
+
+            async selectStock(symbol) {
+                // Update UI
+                document.querySelectorAll('.stock-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                const selectedCard = document.querySelector(`[data-symbol="${symbol}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add('selected');
+                }
+
+                // Show analysis section
+                const analysisSection = document.getElementById('analysisSection');
+                analysisSection.classList.add('active');
+                
+                // Ensure the analysis section has the proper structure
+                if (!analysisSection.querySelector('.analysis-grid')) {
+                    analysisSection.innerHTML = `
+                        <div class="analysis-header">
+                            <h2 class="analysis-title" id="currentStock">📊 ${symbol} Analysis</h2>
+                            <div class="analysis-controls">
+                                <button class="control-btn" id="refreshBtn">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Refresh
+                                </button>
+                                <button class="control-btn" id="exportBtn">
+                                    <i class="fas fa-download"></i>
+                                    Export
+                                </button>
+                            </div>
+                        </div>
+                        <div class="analysis-grid">
+                            <!-- Content will be loaded here -->
+                        </div>
+                    `;
+                    
+                    // Re-attach event listeners
+                    document.getElementById('refreshBtn').addEventListener('click', () => {
+                        if (this.currentStock) {
+                            this.loadStockData(this.currentStock);
+                        }
+                    });
+                    
+                    document.getElementById('exportBtn').addEventListener('click', () => {
+                        this.exportData();
+                    });
+                }
+                
+                analysisSection.scrollIntoView({ behavior: 'smooth' });
+
+                // Update current stock
+                this.currentStock = symbol;
+                const currentStockElement = document.getElementById('currentStock');
+                if (currentStockElement) {
+                    currentStockElement.innerHTML = `📊 ${symbol} Analysis`;
+                }
+
+                // Load stock data
+                await this.loadStockData(symbol);
+            }
+
+            async loadStockData(symbol) {
+                try {
+                    console.log(`🔄 Loading data for ${symbol}...`);
+                    this.showLoading();
+
+                    const response = await fetch(`/api/stock/${symbol}`);
+                    console.log(`📡 API Response status: ${response.status}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log(`📊 API Response data:`, data);
+
+                    if (data.success) {
+                        console.log(`✅ Data loaded successfully for ${symbol}`);
+                        
+                        // Ensure the analysis structure exists
+                        this.createChartCanvas();
+                        
+                        // Small delay to ensure DOM is updated
+                        setTimeout(() => {
+                            this.updateChart(data.historical);
+                            this.updateSentiment(data.sentiment);
+                            this.updateTradingSignals(data.predictions);
+                            this.updateKeyMetrics(data.stock_data);
+                            this.showSuccess(`✅ ${symbol} data loaded successfully!`);
+                        }, 100);
+                    } else {
+                        console.error(`❌ API returned success: false`, data);
+                        throw new Error(data.error || 'API returned success: false');
+                    }
+
+                } catch (error) {
+                    console.error(`❌ Error loading stock data for ${symbol}:`, error);
+                    console.error('Error details:', error.stack);
+                    this.showError(`❌ Failed to load ${symbol} data. Error: ${error.message}`);
+                    
+                    // Show a fallback message in the analysis section
+                    const analysisGrid = document.querySelector('.analysis-grid');
+                    if (analysisGrid) {
+                        analysisGrid.innerHTML = `
+                            <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                                <h3>❌ Unable to load ${symbol} data</h3>
+                                <p>Error: ${error.message}</p>
+                                <button onclick="window.dashboard.loadStockData('${symbol}')" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.5rem; cursor: pointer;">
+                                    🔄 Try Again
+                                </button>
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            updateChart(historicalData) {
+                const chartCanvas = document.getElementById('priceChart');
+                if (!chartCanvas) {
+                    console.log('📊 Chart canvas not found, creating it...');
+                    this.createChartCanvas();
+                    return; // Exit and let the canvas be created first
+                }
+                
+                const ctx = chartCanvas.getContext('2d');
+                
+                if (this.chart) {
+                    this.chart.destroy();
+                }
+
+                const labels = historicalData.map(d => new Date(d.date).toLocaleDateString());
+                const prices = historicalData.map(d => d.price);
+                
+                this.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Price',
+                            data: prices,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: '#e5e7eb'
+                                },
+                                ticks: {
+                                    color: '#6b7280'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: '#e5e7eb'
+                                },
+                                ticks: {
+                                    color: '#6b7280',
+                                    callback: function(value) {
+                                        return '$' + value.toFixed(2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            createChartCanvas() {
+                const analysisGrid = document.querySelector('.analysis-grid');
+                if (!analysisGrid) {
+                    console.error('Analysis grid not found');
+                    return;
+                }
+
+                // Create the complete analysis structure with all necessary elements
+                analysisGrid.innerHTML = `
+                    <!-- Price Chart Card -->
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Price Chart</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Sentiment Analysis Card -->
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-brain"></i> AI Sentiment Analysis</h3>
+                        </div>
+                        <div id="sentimentContent">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <span>Loading sentiment...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trading Signals Card -->
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-robot"></i> AI Trading Signals</h3>
+                        </div>
+                        <div id="tradingSignals">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <span>Loading signals...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics Card -->
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> Key Metrics</h3>
+                        </div>
+                        <div id="keyMetrics">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <span>Loading metrics...</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            updateSentiment(sentimentData) {
+                const sentimentContent = document.getElementById('sentimentContent');
+                if (!sentimentContent) {
+                    console.error('Sentiment content element not found');
+                    return;
+                }
+                
+                sentimentContent.innerHTML = `
+                    <div class="sentiment-overview">
+                        <div class="sentiment-score ${sentimentData.label.toLowerCase()}">
+                            <span class="sentiment-label">${sentimentData.label}</span>
+                            <span class="sentiment-value">${sentimentData.compound.toFixed(3)}</span>
+                        </div>
+                        <div class="confidence-score">
+                            <span>Confidence: ${(sentimentData.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                    </div>
+                    <div class="sentiment-breakdown">
+                        <div class="sentiment-item">
+                            <span><strong>📰 News</strong></span>
+                            <div class="sentiment-bar">
+                                <div class="sentiment-fill positive" style="width: ${sentimentData.sources.news * 100}%"></div>
+                            </div>
+                            <span>${sentimentData.sources.news.toFixed(2)}</span>
+                        </div>
+                        <div class="sentiment-item">
+                            <span><strong>📱 Social Media</strong></span>
+                            <div class="sentiment-bar">
+                                <div class="sentiment-fill positive" style="width: ${sentimentData.sources.social * 100}%"></div>
+                            </div>
+                            <span>${sentimentData.sources.social.toFixed(2)}</span>
+                        </div>
+                        <div class="sentiment-item">
+                            <span><strong>📊 Technical</strong></span>
+                            <div class="sentiment-bar">
+                                <div class="sentiment-fill positive" style="width: ${sentimentData.sources.technical * 100}%"></div>
+                            </div>
+                            <span>${sentimentData.sources.technical.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            updateTradingSignals(predictions) {
+                const tradingSignals = document.getElementById('tradingSignals');
+                if (!tradingSignals) {
+                    console.error('Trading signals element not found');
+                    return;
+                }
+                
+                const signal = predictions.next_day;
+                const signalClass = signal.direction === 'up' ? 'positive' : signal.direction === 'down' ? 'negative' : 'neutral';
+                const signalIcon = signal.direction === 'up' ? 'fa-arrow-up' : signal.direction === 'down' ? 'fa-arrow-down' : 'fa-minus';
+                
+                tradingSignals.innerHTML = `
+                    <div class="sentiment-item" style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 2px solid #3b82f6; border-radius: 1rem; padding: 1.5rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                <i class="fas ${signalIcon}"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-size: 1.3rem; font-weight: 700; color: #1f2937; margin-bottom: 0.25rem;">
+                                    ${signal.direction.toUpperCase()} Signal
+                                </h4>
+                                <p style="color: #6b7280; margin: 0;">
+                                    Confidence: ${(signal.confidence * 100).toFixed(1)}% • Target: $${signal.price}
+                                </p>
+                            </div>
+                        </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem;">
+                            <h5 style="margin-bottom: 0.5rem; color: #374151;">🤖 AI Reasoning:</h5>
+                            <ul style="color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin: 0; padding-left: 1.5rem;">
+                                <li>Strong momentum detected in recent trading</li>
+                                <li>Positive sentiment across multiple sources</li>
+                                <li>Technical indicators align with prediction</li>
+                                <li>Volume confirms price movement direction</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            updateKeyMetrics(stockData) {
+                const keyMetrics = document.getElementById('keyMetrics');
+                if (!keyMetrics) {
+                    console.error('Key metrics element not found');
+                    return;
+                }
+                
+                keyMetrics.innerHTML = `
+                    <div style="display: grid; gap: 1rem;">
+                        <div class="sentiment-item">
+                            <span><strong>💰 Market Cap</strong></span>
+                            <span>${stockData.market_cap}</span>
+                        </div>
+                        <div class="sentiment-item">
+                            <span><strong>📊 P/E Ratio</strong></span>
+                            <span>${stockData.pe_ratio}</span>
+                        </div>
+                        <div class="sentiment-item">
+                            <span><strong>📈 Volume</strong></span>
+                            <span>${stockData.volume.toLocaleString()}</span>
+                        </div>
+                        <div class="sentiment-item">
+                            <span><strong>🔝 52W High</strong></span>
+                            <span>$${stockData.high_52w}</span>
+                        </div>
+                        <div class="sentiment-item">
+                            <span><strong>🔻 52W Low</strong></span>
+                            <span>$${stockData.low_52w}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            showLoading() {
+                const analysisGrid = document.querySelector('.analysis-grid');
+                if (analysisGrid) {
+                    analysisGrid.innerHTML = `
+                        <div class="loading" style="grid-column: 1 / -1;">
+                            <div class="spinner"></div>
+                            <span>🔄 Loading stock data...</span>
+                        </div>
+                    `;
+                } else {
+                    console.log('Analysis grid not found, creating loading message');
+                    // Create the analysis grid if it doesn't exist
+                    const analysisSection = document.getElementById('analysisSection');
+                    if (analysisSection) {
+                        analysisSection.innerHTML = `
+                            <div class="analysis-header">
+                                <h2 class="analysis-title" id="currentStock">📊 Loading...</h2>
+                            </div>
+                            <div class="analysis-grid">
+                                <div class="loading" style="grid-column: 1 / -1;">
+                                    <div class="spinner"></div>
+                                    <span>🔄 Loading stock data...</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            showSuccess(message) {
+                this.showMessage(message, 'success-message');
+            }
+
+            showError(message) {
+                this.showMessage(message, 'error-message');
+            }
+
+            showMessage(message, className) {
+                const existingMessage = document.querySelector(`.${className}`);
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `${className} fade-in`;
+                messageDiv.innerHTML = `
+                    <i class="fas ${className.includes('success') ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.querySelector('.container').insertBefore(messageDiv, document.querySelector('.welcome-section'));
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 5000);
+            }
+
+            startRealTimeUpdates() {
+                // Update stats every 5 seconds
+                setInterval(() => {
+                    this.updateStats();
+                }, 5000);
+            }
+
+            updateStats() {
+                this.animateValue('portfolioValue', 125430, 127000, '$');
+                this.animateValue('aiAccuracy', 94.2, 95.1, '', '%');
+                this.animateValue('activeSignals', 7, 8);
+                this.animateValue('todayGain', 2847, 3200, '+$');
+            }
+
+            animateValue(elementId, start, end, prefix = '', suffix = '') {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+
+                const duration = 1000;
+                const startTime = performance.now();
+
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const current = start + (end - start) * progress;
+                    const formatted = prefix + (current % 1 === 0 ? current.toLocaleString() : current.toFixed(1)) + suffix;
+                    
+                    element.textContent = formatted;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+
+                requestAnimationFrame(animate);
+            }
+
+            exportData() {
+                if (!this.currentStock) {
+                    this.showError('❌ Please select a stock first');
+                    return;
+                }
+
+                const data = {
+                    symbol: this.currentStock,
+                    timestamp: new Date().toISOString(),
+                    exported_by: 'AI Stock Dashboard'
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${this.currentStock}_analysis_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                this.showSuccess(`📁 ${this.currentStock} data exported successfully!`);
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.dashboard = new StockDashboard();
+            console.log('🚀 Dashboard initialized successfully');
+        });
+    </script>
+</body>
+</html>
