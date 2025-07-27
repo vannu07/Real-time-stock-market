@@ -1,0 +1,662 @@
+# 🔐 AI Stock Dashboard - Security & Privacy Protection
+# This file ensures your sensitive data stays private and secure
+
+# ================================
+# 🔑 SENSITIVE DATA & API KEYS
+# ================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+*.env
+config.ini
+secrets.json
+api_keys.txt
+credentials.json
+auth_config.py
+private_keys/
+secrets/
+
+# ================================
+# 💾 DATABASE & DATA FILES
+# ================================
+*.db
+*.sqlite
+*.sqlite3
+database/
+data/
+*.csv
+*.json
+*.xlsx
+*.xls
+stock_data/
+historical_data/
+user_data/
+portfolio_data/
+trading_history/
+backups/
+dumps/
+
+# ================================
+# 🐍 PYTHON SPECIFIC
+# ================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+test-results/
+test_reports/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff (if used)
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff
+instance/
+.webassets-cache
+
+# Scrapy stuff
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+virtual_env/
+virtualenv/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# ================================
+# 🌐 WEB & FRONTEND
+# ================================
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage
+.grunt
+
+# Bower dependency directory
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# ================================
+# 🖥️ OPERATING SYSTEM
+# ================================
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ================================
+# 🛠️ DEVELOPMENT TOOLS
+# ================================
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.target
+.tern-project
+.texlipse
+.cache-main
+.scala_dependencies
+.worksheet
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+*~
+tags
+[._]*.un~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+.org-id-locations
+*_archive
+*_flymake.*
+/eshell/history
+/eshell/lastdir
+/elpa/
+*.rel
+
+# ================================
+# 📊 LOGS & MONITORING
+# ================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+debug.log
+error.log
+access.log
+combined.log
+app.log
+server.log
+api.log
+ml_model.log
+trading.log
+performance.log
+
+# ================================
+# 🐳 DOCKER & CONTAINERS
+# ================================
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# ================================
+# ☁️ CLOUD & DEPLOYMENT
+# ================================
+# AWS
+.aws/
+aws-config.json
+*.pem
+
+# Google Cloud
+gcloud-config.json
+service-account.json
+*.json
+
+# Azure
+.azure/
+azure-config.json
+
+# Heroku
+.heroku/
+Procfile.local
+
+# Vercel
+.vercel
+
+# Netlify
+.netlify
+
+# ================================
+# 🔧 BUILD & COMPILATION
+# ================================
+# Compiled output
+/dist/
+/build/
+/out/
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.dll
+
+# ================================
+# 📦 PACKAGE MANAGERS
+# ================================
+# pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# conda
+.conda/
+
+# yarn
+.yarn/
+.pnp.*
+
+# ================================
+# 🧪 TESTING & CI/CD
+# ================================
+# Test results
+test-results/
+test_reports/
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+
+# CI/CD
+.github/workflows/secrets.yml
+.travis.yml.local
+.circleci/config.local.yml
+
+# ================================
+# 📈 ML & AI SPECIFIC
+# ================================
+# Model files
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.hdf5
+*.pb
+*.onnx
+*.tflite
+models/
+trained_models/
+checkpoints/
+model_weights/
+tensorboard_logs/
+
+# Data science
+.ipynb_checkpoints/
+*.ipynb
+jupyter_notebooks/
+experiments/
+research/
+
+# ================================
+# 💰 TRADING & FINANCE SPECIFIC
+# ================================
+# Trading data
+trading_data/
+portfolio_history/
+transaction_logs/
+account_statements/
+tax_documents/
+broker_configs/
+api_responses/
+market_data_cache/
+
+# Personal finance
+personal_portfolio.json
+account_balances.csv
+investment_history.xlsx
+tax_info/
+financial_reports/
+
+# ================================
+# 🔒 SECURITY & CERTIFICATES
+# ================================
+# SSL certificates
+*.crt
+*.key
+*.pem
+*.p12
+*.pfx
+certs/
+ssl/
+
+# SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+known_hosts
+authorized_keys
+
+# GPG keys
+*.gpg
+*.asc
+keyring/
+
+# ================================
+# 📱 MOBILE & APPS
+# ================================
+# React Native
+.expo/
+.expo-shared/
+
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# ================================
+# 🗂️ DOCUMENTATION CLEANUP
+# ================================
+# Keep only essential documentation
+README_OLD.md
+README_BACKUP.md
+README_DRAFT.md
+NOTES.md
+TODO.md
+CHANGELOG_DRAFT.md
+docs/drafts/
+documentation/old/
+
+# Remove personal notes
+personal_notes/
+my_notes.txt
+ideas.txt
+brainstorm.md
+meeting_notes/
+
+# ================================
+# 🎯 PROJECT SPECIFIC IGNORES
+# ================================
+# Stock dashboard specific
+stock_analysis_cache/
+prediction_cache/
+sentiment_cache/
+news_cache/
+api_rate_limits.json
+user_preferences.json
+dashboard_state.json
+custom_indicators/
+private_strategies/
+
+# Development artifacts
+*.orig
+*.rej
+.merge_file_*
+
+# Backup files
+*.backup
+*.bak
+*.old
+*_backup
+*_old
+
+# ================================
+# 🚫 NEVER COMMIT THESE
+# ================================
+# Absolutely never commit these files
+password.txt
+passwords.txt
+secret.txt
+secrets.txt
+private.txt
+confidential.txt
+api_key.txt
+token.txt
+auth_token.txt
+session_token.txt
+access_token.txt
+refresh_token.txt
+client_secret.txt
+private_key.txt
+master_key.txt
+encryption_key.txt
+
+# Personal information
+personal_info.json
+user_data.json
+profile.json
+settings.json
+preferences.json
+
+# Financial data
+bank_info.txt
+credit_card.txt
+account_numbers.txt
+routing_numbers.txt
+financial_data.json
+
+# ================================
+# ✅ WHAT TO KEEP (COMMENTS ONLY)
+# ================================
+# These files SHOULD be committed:
+# - README.md (main documentation)
+# - LICENSE (project license)
+# - requirements.txt (Python dependencies)
+# - .env.template (environment template)
+# - backend/ (source code)
+# - frontend/ (source code)
+# - tests/ (test files)
+# - docs/ (public documentation)
+# - .gitignore (this file)
+
+# ================================
+# 🔍 FINAL CATCH-ALL
+# ================================
+# Any file with these patterns
+*secret*
+*private*
+*confidential*
+*password*
+*token*
+*key*
+*credential*
+*auth*
+*.secret
+*.private
+*.confidential
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.#*
+#*#
